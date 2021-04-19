@@ -2,15 +2,19 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const request=require("request");
 const https=require("https");
+
+const dotenv = require('dotenv');
+dotenv.config({ path: '.env' });
+
 const app=express();
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public"));
 
 
-app.listen(3000,function(){
+app.listen(process.env.PORT||3000,function(){
     console.log("The server is listening to port 3000");
-})
+});
 
 app.get("/",function(req,res){
     res.sendFile(__dirname+"/index.html");
@@ -23,11 +27,11 @@ app.post("/",function(req,res){
     let email=req.body.email;
 
 
-    const url="https://us1.api.mailchimp.com/3.0/lists/cd3a42dfdb";
+    const url="https://us1.api.mailchimp.com/3.0/lists/"+process.env.MAILCHIMP_LIST_KEY;
 
     const options={
         method:"POST", 
-        auth : "SaurabhFrenzy17:03c888310a3baeca2f640cba90a15d4d-us1"
+        auth : "SaurabhFrenzy17:"+ process.env.MAILCHIMP_API_KEY
     }
 
     const data = {
@@ -60,8 +64,4 @@ app.post("/",function(req,res){
 
     request.write(requestBody);
     request.end();
-
 });
-
-// 03c888310a3baeca2f640cba90a15d4d-us1
-//cd3a42dfdb
